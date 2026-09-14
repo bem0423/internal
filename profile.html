@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>마실 — 프로필 설정</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="profile">
+  <header class="site-header"><div class="container"><a href="index.html" class="logo">← 마실</a></div></header>
+  <main class="container main">
+    <section class="card">
+      <h2>현재 능력 — 스킬 선택</h2>
+      <p class="muted">검색해 여러 개 선택할 수 있습니다. 선택한 항목은 칩으로 표시됩니다.</p>
+      <div class="skill-picker">
+        <input id="skillSearch" placeholder="스킬 검색 예: 생산관리, 멘토링" aria-label="스킬 검색">
+        <ul id="skillSuggestions" class="suggestions"></ul>
+        <div id="selectedSkills" class="chips"></div>
+      </div>
+      <div style="margin-top:12px">
+        <button id="saveSkills" class="btn primary">다음: 희망 선택</button>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
