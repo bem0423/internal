@@ -46,29 +46,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   if(page === 'profile'){
-    // skill picker
-    const skillSearch = document.getElementById('skillSearch');
-    const skillSuggestions = document.getElementById('skillSuggestions');
-    const selectedSkills = document.getElementById('selectedSkills');
-    let selected = [];
-
-    function renderSuggestions(q=''){
-      skillSuggestions.innerHTML = '';
-      const ql = q.trim().toLowerCase();
-      skills.filter(s=>s.toLowerCase().includes(ql) && !selected.includes(s)).slice(0,20).forEach(s=>{
-        const li = document.createElement('li'); li.textContent = s; li.addEventListener('click',()=>{ addSkill(s); skillSearch.value=''; renderSuggestions(); }); skillSuggestions.appendChild(li);
-      });
-    }
-    function addSkill(s){ if(selected.includes(s)) return; selected.push(s); renderSelected(); }
-    function removeSkill(s){ selected = selected.filter(x=>x!==s); renderSelected(); }
-    function renderSelected(){ selectedSkills.innerHTML=''; selected.forEach(s=>{ const d=document.createElement('span'); d.className='chip'; d.innerHTML = `${s}<span class="remove">×</span>`; d.querySelector('.remove').addEventListener('click',()=>removeSkill(s)); selectedSkills.appendChild(d); }); }
-
-    skillSearch.addEventListener('input',e=>{ renderSuggestions(e.target.value); });
-    renderSuggestions();
-
-    // load saved
-    const savedProfile = localStorage.getItem('masil_profile');
-    if(savedProfile){ try{ const p=JSON.parse(savedProfile); if(p.skills) { selected = p.skills; renderSelected(); } }catch(e){} }
+    // (스킬 선택 UI 제거) — 단순히 다음으로 이동하는 버튼만 남깁니다.
 
     // banner auth to import past work (mock)
     const bannerAuth = document.getElementById('bannerAuth');
@@ -113,9 +91,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
     renderWork();
 
-    document.getElementById('saveSkills').addEventListener('click',()=>{
+    document.getElementById('toAbilities').addEventListener('click',()=>{
       const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
-      profile.skills = selected;
       profile.updated = Date.now();
       localStorage.setItem('masil_profile',JSON.stringify(profile));
       window.location.href = 'abilities.html';
@@ -155,7 +132,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const loading = document.getElementById('loading');
     // simulate loading
     setTimeout(()=>{
-      loading.style.display = 'none'; recList.style.display = 'grid';
+      loading.style.display = 'none'; recList.style.display = 'grid'; recList.className = 'job-grid';
       const samples = [
         {id:1,title:'부천 제조업 보조',meta:'제조업 15년 · 주 3일 가능',img:'assets/rec1.svg',tags:['제조업 현장관리'],skills:['생산관리','현장관리'],mid:'파트타임(주3일)'},
         {id:2,title:'지역 역사 답사 모임',meta:'지역활동 · 주말 참여',img:'assets/rec2.svg',tags:['문화관광 안내'],skills:['안내','행사운영'],mid:'주말형'},
@@ -188,11 +165,11 @@ document.addEventListener('DOMContentLoaded',()=>{
       const scored = samples.map(s=>{ const r=computeScore(s); return Object.assign({},s,r); });
       scored.sort((a,b)=>b.score - a.score);
 
-      // render with reason
+      // render as square job blocks
       scored.forEach(s=>{
-        const d = document.createElement('div'); d.className='rec-card';
+        const d = document.createElement('div'); d.className='job-block';
         const reasonText = s.reasons && s.reasons.length ? s.reasons.join(' · ') : '프로필과 관련된 추천 이유를 확인하세요.';
-        d.innerHTML = `<img src="${s.img}" alt="rec"><div><strong>${s.title}</strong><div class=\"muted\">${s.meta}</div><div style=\"margin-top:8px;color:#2b8aef\">추천 이유: ${reasonText}</div></div>`;
+        d.innerHTML = `<strong style="display:block;margin-bottom:6px">${s.title}</strong><div class=\"muted\">${s.meta}</div><div style=\"margin-top:10px;font-size:0.95rem;color:#2b8aef\">추천 이유: ${reasonText}</div>`;
         recList.appendChild(d);
       });
     },1200);
