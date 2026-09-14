@@ -226,20 +226,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!card) return;
     const mapImage = document.getElementById('mapImage');
     if(mapImage){
-      let mapFallbackTried = false;
-      mapImage.addEventListener('error', ()=>{
-        console.warn('map image failed to load', mapImage.src);
-        // First attempt: try a JPG fallback (only once) if available
-        if(!mapFallbackTried){
-          mapFallbackTried = true;
-          const fallback = 'assets/map_example.jpg';
-          console.info('attempting map fallback to', fallback);
-          mapImage.src = fallback;
-          mapImage.alt = '지도 이미지 대체 시도 중';
-          return;
-        }
+      // Robust loading: fetch the SVG first (helps detect network/CORS issues on mobile),
+      // then set img.src. If SVG not available, try JPG fallback once, otherwise show overlay.
+      const svgSrc = 'assets/map_example2.svg';
+      const jpgFallback = 'assets/map_example.jpg';
+      let triedJpg = false;
 
-        // If fallback already tried (or no fallback), show neutral overlay
+      function showMapOverlay(){
         mapImage.alt = '지도 이미지 로드 실패';
         try{
           mapImage.style.display = 'none';
@@ -259,6 +252,35 @@ document.addEventListener('DOMContentLoaded',()=>{
             existing.style.display = 'flex';
           }
         }catch(e){ console.warn('map error overlay failed',e); }
+      }
+
+      function tryJpgFallback(){
+        if(triedJpg) { showMapOverlay(); return; }
+        triedJpg = true;
+        console.info('trying JPG fallback for map:', jpgFallback);
+        fetch(jpgFallback, {method:'GET', cache:'no-store'}).then(r=>{
+          if(r.ok) { mapImage.src = jpgFallback; mapImage.alt = '대체 지도 이미지'; mapImage.style.display = ''; }
+          else showMapOverlay();
+        }).catch(err=>{ console.warn('jpg fallback fetch failed', err); showMapOverlay(); });
+      }
+
+      // attempt to fetch SVG first
+      fetch(svgSrc, {method:'GET', cache:'no-store'}).then(resp=>{
+        if(resp.ok){
+          mapImage.src = svgSrc; mapImage.alt = '지도 이미지'; mapImage.style.display = '';
+        } else {
+          console.warn('SVG fetch returned', resp.status, 'trying JPG');
+          tryJpgFallback();
+        }
+      }).catch(err=>{
+        console.warn('SVG fetch failed', err, 'trying JPG');
+        tryJpgFallback();
+      });
+
+      // in case the image element itself triggers an error for other reasons
+      mapImage.addEventListener('error', ()=>{
+        console.warn('img element error for', mapImage.src);
+        if(!triedJpg) tryJpgFallback(); else showMapOverlay();
       });
     }
     markers.forEach(m=>{
