@@ -43,6 +43,17 @@ body{margin:0;font-family:Inter, system-ui,-apple-system,Segoe UI,Roboto,'Noto S
 .chip{background:#eef6ff;padding:6px 10px;border-radius:999px;font-size:.95rem;display:inline-flex;align-items:center}
 .chip .remove{margin-left:8px;cursor:pointer;font-weight:bold}
 
+/* map markers */
+.map-marker{position:absolute;width:16px;height:16px;border-radius:50%;background:#ff6b6b;border:3px solid #fff;transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+
+/* chat list */
+.chat-list{display:flex;flex-direction:column;gap:8px}
+.chat-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;text-decoration:none;color:var(--text);background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid #eef2f7}
+.chat-item .avatar{width:44px;height:44px;border-radius:50%;background:#eef6ff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.chat-item .chat-meta{flex:1}
+.chat-item .chat-title{font-weight:700}
+.chat-item .unread{background:#ff6b6b;color:#fff;padding:6px 10px;border-radius:999px;font-weight:700}
+
 /* selectors layout */
 .selectors label{display:block;margin-top:8px}
 .selectors select{width:100%;padding:10px;border-radius:10px;border:1px solid #eef2f7;margin-top:6px;background:#fbfdff}
