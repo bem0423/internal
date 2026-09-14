@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   // hide bottom nav by default; will be shown when profile exists
   document.querySelectorAll('.bottom-nav').forEach(n=>{ n.style.display='none'; });
+  // if a profile already exists, show the bottom nav across pages
+  if(localStorage.getItem('masil_profile')){
+    document.querySelectorAll('.bottom-nav').forEach(n=>{ n.style.display='flex'; });
+  }
 
   function openAuthModal(onSuccess){
     const modalBack = document.createElement('div');
