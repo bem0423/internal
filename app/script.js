@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
     document.getElementById('saveSummary').addEventListener('click',()=>{
       profile.imageData = imagePreview.src; profile.intro = intro.value; localStorage.setItem('masil_profile',JSON.stringify(profile));
-      window.location.href = 'recommendations.html';
+      window.location.href = 'check.html';
     });
     return;
   }
