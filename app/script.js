@@ -82,7 +82,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     // if user already has profile, show home recommendations instead of login
     const existing = localStorage.getItem('masil_profile');
-    if(existing){ if(loginCard) loginCard.style.display='none'; if(homeRec) { homeRec.style.display='block'; renderRecommendations('homeRecList'); document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); } }
+    // Always show the platform (recommendations) on the initial page
+    if(homeRec){ homeRec.style.display='block'; renderRecommendations('homeRecList'); }
+    // If profile exists, hide login and show nav
+    if(existing){ if(loginCard) loginCard.style.display='none'; document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); }
 
     doLogin.addEventListener('click',()=>{
       localStorage.setItem('masil_logged_in','1');
