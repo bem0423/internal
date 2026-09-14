@@ -347,7 +347,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     const imagePreview = document.getElementById('imagePreview');
     const intro = document.getElementById('intro');
     const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
-    if(profile.imageData) imagePreview.src = profile.imageData;
+    if(profile.imageData){
+      // Avoid using recommendation banners (rec*.svg) as profile images — use default SVG instead
+      try{
+        const v = profile.imageData;
+        const isDataUrl = typeof v === 'string' && v.startsWith('data:');
+        const isRecBanner = typeof v === 'string' && /rec\d+\.svg$/.test(v);
+        if(isDataUrl || !isRecBanner) imagePreview.src = v;
+        else imagePreview.src = 'assets/profile_example.svg';
+      }catch(e){ imagePreview.src = 'assets/profile_example.svg'; }
+    }
     if(profile.intro) intro.value = profile.intro;
     imageInput.addEventListener('change',e=>{
       const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = ()=>{ imagePreview.src = reader.result; }; reader.readAsDataURL(f);
