@@ -70,12 +70,55 @@ document.addEventListener('DOMContentLoaded',()=>{
     const savedProfile = localStorage.getItem('masil_profile');
     if(savedProfile){ try{ const p=JSON.parse(savedProfile); if(p.skills) { selected = p.skills; renderSelected(); } }catch(e){} }
 
+    // banner auth to import past work (mock)
+    const bannerAuth = document.getElementById('bannerAuth');
+    bannerAuth.addEventListener('click',()=>{
+      openAuthModal((data)=>{
+        // mock import of past work
+        const imported = [{industry:'제조업 현장관리',years:15},{industry:'소매·판매',years:4}];
+        const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+        profile.work = profile.work ? profile.work.concat(imported) : imported;
+        localStorage.setItem('masil_profile',JSON.stringify(profile));
+        renderWork();
+      });
+    });
+
+    // work map: industries select and tenure
+    const industries = ['제조업 현장관리','돌봄 서비스','교육·멘토링','자문·컨설팅','지역행사 운영','문화관광 안내','소매·판매','식음료 서비스','환경·안전 활동','공공복지 활동'];
+    const industrySelect = document.getElementById('industrySelect');
+    industries.forEach(i=>{ const o=document.createElement('option'); o.value=i; o.textContent=i; industrySelect.appendChild(o); });
+    const tenureInput = document.getElementById('tenureInput');
+    const addWorkBtn = document.getElementById('addWork');
+    const workList = document.getElementById('workList');
+    function renderWork(){
+      workList.innerHTML='';
+      const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+      const items = profile.work || [];
+      items.forEach((w,idx)=>{
+        const li = document.createElement('li'); li.textContent = `${w.industry} — ${w.years}년 `;
+        const edit = document.createElement('button'); edit.className='btn'; edit.textContent='수정'; edit.style.marginLeft='8px'; edit.addEventListener('click',()=>{
+          industrySelect.value = w.industry; tenureInput.value = w.years; items.splice(idx,1); profile.work = items; localStorage.setItem('masil_profile',JSON.stringify(profile)); renderWork();
+        });
+        const del = document.createElement('button'); del.className='btn'; del.textContent='삭제'; del.style.marginLeft='6px'; del.addEventListener('click',()=>{ items.splice(idx,1); profile.work = items; localStorage.setItem('masil_profile',JSON.stringify(profile)); renderWork(); });
+        li.appendChild(edit); li.appendChild(del); workList.appendChild(li);
+      });
+    }
+    addWorkBtn.addEventListener('click',()=>{
+      const industry = industrySelect.value; const years = parseInt(tenureInput.value||0,10);
+      if(!industry){ alert('업종을 선택하세요'); return; }
+      if(isNaN(years)){ alert('근속기간을 숫자로 입력하세요'); return; }
+      const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+      profile.work = profile.work || []; profile.work.push({industry,years}); localStorage.setItem('masil_profile',JSON.stringify(profile)); renderWork();
+      tenureInput.value='';
+    });
+    renderWork();
+
     document.getElementById('saveSkills').addEventListener('click',()=>{
       const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
       profile.skills = selected;
       profile.updated = Date.now();
       localStorage.setItem('masil_profile',JSON.stringify(profile));
-      window.location.href = 'categories.html';
+      window.location.href = 'abilities.html';
     });
 
     return;
@@ -101,7 +144,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
       profile.major = selMajor.value; profile.mid = selMid.value; profile.minor = selMinor.value; profile.updated = Date.now();
       localStorage.setItem('masil_profile',JSON.stringify(profile));
-      window.location.href = 'recommendations.html';
+      window.location.href = 'summary.html';
     });
 
     return;
@@ -114,16 +157,86 @@ document.addEventListener('DOMContentLoaded',()=>{
     setTimeout(()=>{
       loading.style.display = 'none'; recList.style.display = 'grid';
       const samples = [
-        {title:'부천 제조업 보조',meta:'제조업 15년 · 주 3일 가능',img:'assets/rec1.svg'},
-        {title:'지역 역사 답사 모임',meta:'지역활동 · 주말 참여',img:'assets/rec2.svg'},
-        {title:'청년 멘토링',meta:'생산관리 경험 · 멘토 희망',img:'assets/rec3.svg'},
-        {title:'은퇴기술인 교류',meta:'기술 전수 · 프로젝트형',img:'assets/rec4.svg'},
-        {title:'단기 자문 프로젝트',meta:'자문·컨설팅 · 단기',img:'assets/rec5.svg'},
-        {title:'지역 안전 봉사',meta:'주말 · 정기봉사',img:'assets/rec6.svg'}
+        {id:1,title:'부천 제조업 보조',meta:'제조업 15년 · 주 3일 가능',img:'assets/rec1.svg',tags:['제조업 현장관리'],skills:['생산관리','현장관리'],mid:'파트타임(주3일)'},
+        {id:2,title:'지역 역사 답사 모임',meta:'지역활동 · 주말 참여',img:'assets/rec2.svg',tags:['문화관광 안내'],skills:['안내','행사운영'],mid:'주말형'},
+        {id:3,title:'청년 멘토링',meta:'생산관리 경험 · 멘토 희망',img:'assets/rec3.svg',tags:['교육·멘토링'],skills:['멘토링','프로젝트관리'],mid:'단기·프로젝트'},
+        {id:4,title:'은퇴기술인 교류',meta:'기술 전수 · 프로젝트형',img:'assets/rec4.svg',tags:['자문·컨설팅'],skills:['기술전수','자문'],mid:'단기·프로젝트'},
+        {id:5,title:'단기 자문 프로젝트',meta:'자문·컨설팅 · 단기',img:'assets/rec5.svg',tags:['자문·컨설팅'],skills:['자문','프로젝트관리'],mid:'단기·프로젝트'},
+        {id:6,title:'지역 안전 봉사',meta:'주말 · 정기봉사',img:'assets/rec6.svg',tags:['공공복지 활동'],skills:['안전관리','봉사'],mid:'주말형'}
       ];
-      samples.forEach(s=>{
-        const d = document.createElement('div'); d.className='rec-card'; d.innerHTML = `<img src="${s.img}" alt="rec"><div><strong>${s.title}</strong><div class="muted">${s.meta}</div></div>`; recList.appendChild(d);
+
+      // load user profile to compute matching
+      const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+      const userSkills = Array.isArray(profile.skills) ? profile.skills : [];
+      const userMajor = profile.major || '';
+      const userMid = profile.mid || '';
+      const userMinor = profile.minor || '';
+
+      function computeScore(item){
+        let score = 0; const reasons = [];
+        if(userMajor && item.tags && item.tags.some(t=>t === userMajor)){ score += 4; reasons.push('경력 분야(대분류)가 맞습니다'); }
+        if(userMid && item.mid && item.mid === userMid){ score += 2; reasons.push('희망 근무형태가 일치합니다'); }
+        // skill overlap
+        const sharedSkills = item.skills.filter(s=> userSkills.includes(s));
+        if(sharedSkills.length>0){ score += Math.min(sharedSkills.length,5); reasons.push(`공통 스킬: ${sharedSkills.join(', ')}`); }
+        // minor matching (if provided in item.tags)
+        if(userMinor && item.tags && item.tags.some(t=>t === userMinor)){ score += 1; reasons.push('소분류 활동유형이 유사합니다'); }
+        return {score,reasons,sharedSkills};
+      }
+
+      // score and sort
+      const scored = samples.map(s=>{ const r=computeScore(s); return Object.assign({},s,r); });
+      scored.sort((a,b)=>b.score - a.score);
+
+      // render with reason
+      scored.forEach(s=>{
+        const d = document.createElement('div'); d.className='rec-card';
+        const reasonText = s.reasons && s.reasons.length ? s.reasons.join(' · ') : '프로필과 관련된 추천 이유를 확인하세요.';
+        d.innerHTML = `<img src="${s.img}" alt="rec"><div><strong>${s.title}</strong><div class=\"muted\">${s.meta}</div><div style=\"margin-top:8px;color:#2b8aef\">추천 이유: ${reasonText}</div></div>`;
+        recList.appendChild(d);
       });
     },1200);
+  }
+  
+  if(page === 'abilities'){
+    let activeTab = 'education';
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const abilityInput = document.getElementById('abilityInput');
+    const addAbility = document.getElementById('addAbility');
+    const abilityLists = document.getElementById('abilityLists');
+    const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+    profile.abilities = profile.abilities || {education:[],certs:[],expertise:[],digital:[]};
+
+    function renderAbilities(){
+      abilityLists.innerHTML='';
+      Object.keys(profile.abilities).forEach(k=>{
+        const box = document.createElement('div'); box.style.marginTop='8px'; box.innerHTML = `<strong>${k}</strong>`;
+        const ul = document.createElement('ul'); profile.abilities[k].forEach((it,idx)=>{ const li=document.createElement('li'); li.textContent=it; const del=document.createElement('button'); del.className='btn'; del.textContent='삭제'; del.style.marginLeft='8px'; del.addEventListener('click',()=>{ profile.abilities[k].splice(idx,1); localStorage.setItem('masil_profile',JSON.stringify(profile)); renderAbilities(); }); li.appendChild(del); ul.appendChild(li); }); box.appendChild(ul); abilityLists.appendChild(box);
+      });
+    }
+    tabBtns.forEach(b=>{ b.addEventListener('click',()=>{ activeTab=b.dataset.tab; tabBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active'); }); });
+    addAbility.addEventListener('click',()=>{
+      const v = abilityInput.value.trim(); if(!v) return; profile.abilities[activeTab] = profile.abilities[activeTab] || []; profile.abilities[activeTab].push(v); localStorage.setItem('masil_profile',JSON.stringify(profile)); abilityInput.value=''; renderAbilities();
+    });
+    renderAbilities();
+    document.getElementById('saveAbilities').addEventListener('click',()=>{ window.location.href = 'categories.html'; });
+    return;
+  }
+
+  if(page === 'summary'){
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const intro = document.getElementById('intro');
+    const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
+    if(profile.imageData) imagePreview.src = profile.imageData;
+    if(profile.intro) intro.value = profile.intro;
+    imageInput.addEventListener('change',e=>{
+      const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = ()=>{ imagePreview.src = reader.result; }; reader.readAsDataURL(f);
+    });
+    document.getElementById('saveSummary').addEventListener('click',()=>{
+      profile.imageData = imagePreview.src; profile.intro = intro.value; localStorage.setItem('masil_profile',JSON.stringify(profile));
+      window.location.href = 'recommendations.html';
+    });
+    return;
   }
 });
