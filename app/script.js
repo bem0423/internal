@@ -229,7 +229,25 @@ document.addEventListener('DOMContentLoaded',()=>{
       mapImage.addEventListener('error', ()=>{
         console.warn('map image failed to load');
         mapImage.alt = '지도 이미지 로드 실패';
-        // do not swap to another asset (avoids showing recommendation banner accidentally)
+        // hide the broken image and show a neutral placeholder overlay
+        try{
+          mapImage.style.display = 'none';
+          let existing = document.getElementById('mapErrorOverlay');
+          if(!existing){
+            const overlay = document.createElement('div');
+            overlay.id = 'mapErrorOverlay';
+            overlay.style.position = 'absolute';
+            overlay.style.left = '0'; overlay.style.top = '0'; overlay.style.right = '0'; overlay.style.bottom = '0';
+            overlay.style.display = 'flex'; overlay.style.alignItems = 'center'; overlay.style.justifyContent = 'center';
+            overlay.style.background = 'linear-gradient(180deg, rgba(250,250,250,0.9), rgba(245,245,245,0.95))';
+            overlay.style.borderRadius = '10px'; overlay.style.zIndex = '20';
+            overlay.innerHTML = `<div style="text-align:center;padding:12px;color:#333"><strong>지도 로드에 실패했습니다</strong><div class="muted" style="margin-top:6px">네트워크 또는 경로 문제일 수 있습니다. 새로고침하세요.</div></div>`;
+            card.style.position = card.style.position || 'relative';
+            card.appendChild(overlay);
+          } else {
+            existing.style.display = 'flex';
+          }
+        }catch(e){ console.warn('map error overlay failed',e); }
       });
     }
     markers.forEach(m=>{
