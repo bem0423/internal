@@ -47,7 +47,16 @@ body{margin:0;font-family:Inter, system-ui,-apple-system,Segoe UI,Roboto,'Noto S
 .map-marker{position:absolute;width:16px;height:16px;border-radius:50%;background:#ff6b6b;border:3px solid #fff;transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.12);z-index:30}
 
 /* popup should float above markers and map image */
+.map-marker{position:absolute;width:22px;height:22px;border-radius:50%;background:#ff6b6b;border:3px solid #fff;transform:translate(-50%,-50%);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.12);z-index:30}
+
+/* make the underlying map image non-interactive so markers receive clicks on mobile */
+#mapImage{position:relative;z-index:10;pointer-events:none;display:block}
+
+/* popup should float above markers and map image */
 #mapPopup{z-index:40}
+
+/* increase tappable area without changing visual by adding an invisible hit area */
+.map-marker::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:transparent}
 
 /* chat list */
 .chat-list{display:flex;flex-direction:column;gap:8px}
