@@ -227,9 +227,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     const mapImage = document.getElementById('mapImage');
     if(mapImage){
       mapImage.addEventListener('error', ()=>{
-        console.warn('map image failed to load, using fallback');
-        mapImage.src = 'assets/rec4.svg';
-        mapImage.alt = '지도 이미지(대체)';
+        console.warn('map image failed to load');
+        mapImage.alt = '지도 이미지 로드 실패';
+        // do not swap to another asset (avoids showing recommendation banner accidentally)
       });
     }
     markers.forEach(m=>{
