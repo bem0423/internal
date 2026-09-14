@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect width="100%" height="100%" fill="#eaf4ff" rx="12"/>
+  <g fill="#2b8aef" font-family="sans-serif" font-size="16" font-weight="700">
+    <text x="16" y="40">부천</text>
+    <text x="16" y="66">제조업</text>
+    <text x="16" y="92">보조</text>
+  </g>
+  <circle cx="160" cy="140" r="28" fill="#bfe0ff" />
+</svg>
