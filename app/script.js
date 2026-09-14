@@ -219,6 +219,27 @@ document.addEventListener('DOMContentLoaded',()=>{
     setTimeout(()=>{ if(loading) loading.style.display='none'; renderRecommendations('recList'); },800);
   }
   
+  if(page === 'neighborhood'){
+    const markers = document.querySelectorAll('.map-marker');
+    const popup = document.getElementById('mapPopup');
+    const card = document.getElementById('mapCard');
+    if(!card) return;
+    markers.forEach(m=>{
+      m.addEventListener('click',(e)=>{
+        // position popup near marker using marker's left/top
+        popup.style.display='block';
+        popup.style.left = m.style.left;
+        popup.style.top = m.style.top;
+        popup.innerHTML = `<strong>${m.dataset.title}</strong><div class=\"muted\" style=\"font-size:12px;margin-top:6px\">${m.dataset.desc}</div><div style=\"margin-top:8px\"><a href=\"recommendations.html\" class=\"btn primary\">자세히 보기</a></div>`;
+      });
+    });
+    card.addEventListener('click',(ev)=>{
+      if(ev.target.classList && ev.target.classList.contains('map-marker')) return;
+      if(popup) popup.style.display='none';
+    });
+    return;
+  }
+  
   if(page === 'abilities'){
     let activeTab = '교육·학습';
     const tabBtns = document.querySelectorAll('.tab-btn');
