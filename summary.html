@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>마실 — 요약 및 자기소개</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="summary">
+  <header class="site-header"><div class="container"><a href="categories.html" class="logo">← 미래 지도</a></div></header>
+  <main class="container main">
+    <section class="card">
+      <h2>요약 및 자기소개</h2>
+      <p class="muted">프로필에 사용할 대표 이미지를 업로드하고 자기소개를 작성하세요.</p>
+
+      <div>
+        <label>대표 이미지 업로드
+          <input id="imageInput" type="file" accept="image/*">
+        </label>
+        <div style="margin-top:8px"><img id="imagePreview" src="assets/rec1.svg" alt="preview" style="max-width:220px;border-radius:8px"></div>
+      </div>
+
+      <div style="margin-top:12px">
+        <label>자기소개
+          <textarea id="intro" rows="6" style="width:100%" placeholder="자기소개를 입력하세요"></textarea>
+        </label>
+      </div>
+
+      <div style="margin-top:12px">
+        <button id="saveSummary" class="btn primary">프로필 저장 및 추천 보기</button>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
