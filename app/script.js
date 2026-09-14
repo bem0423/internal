@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const doLogin = document.getElementById('doLogin');
     const doPension = document.getElementById('doPension');
     const loginCard = document.getElementById('loginCard');
+    const loginModal = document.getElementById('loginModal');
     const homeRec = document.getElementById('homeRec');
 
     // if user already has profile, show home recommendations instead of login
@@ -85,7 +86,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Always show the platform (recommendations) on the initial page
     if(homeRec){ homeRec.style.display='block'; renderRecommendations('homeRecList'); }
     // If profile exists, hide login and show nav
-    if(existing){ if(loginCard) loginCard.style.display='none'; document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); }
+    if(existing){ if(loginModal) loginModal.style.display='none'; else if(loginCard) loginCard.style.display='none'; document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); }
 
     doLogin.addEventListener('click',()=>{
       localStorage.setItem('masil_logged_in','1');
@@ -100,12 +101,12 @@ document.addEventListener('DOMContentLoaded',()=>{
         imageData: 'assets/rec1.svg',
         intro: '데모 사용자 — 생산관리와 멘토 경험이 있습니다.',
         work: [{industry:'제조업 현장관리',years:15},{industry:'소매·판매',years:4}],
-        abilities: {education:['직업훈련 A'],certs:['자격증 A'],expertise:['현장관리'],digital:['스마트폰활용']},
+        abilities: {'교육·학습':['직업훈련 A'],'자격증':['자격증 A'],'전문분야':['현장관리'],'디지털 활용':['스마트폰활용']},
         major: '제조업 현장관리', mid: '파트타임(주3일)', minor: '현장관리',
         skills: ['생산관리','현장관리','멘토링']
       };
       localStorage.setItem('masil_profile',JSON.stringify(demo));
-      document.getElementById('loginCard').style.display='none';
+      if(loginModal) loginModal.style.display='none'; else if(loginCard) loginCard.style.display='none';
       const homeRec = document.getElementById('homeRec'); if(homeRec) homeRec.style.display='block';
       renderRecommendations('homeRecList'); document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex');
     }); }
@@ -215,13 +216,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   
   if(page === 'abilities'){
-    let activeTab = 'education';
+    let activeTab = '교육·학습';
     const tabBtns = document.querySelectorAll('.tab-btn');
     const abilityInput = document.getElementById('abilityInput');
     const addAbility = document.getElementById('addAbility');
     const abilityLists = document.getElementById('abilityLists');
     const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
-    profile.abilities = profile.abilities || {education:[],certs:[],expertise:[],digital:[]};
+    profile.abilities = profile.abilities || {'교육·학습':[], '자격증':[], '전문분야':[], '디지털 활용':[]};
 
     function renderAbilities(){
       abilityLists.innerHTML='';
