@@ -226,10 +226,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(!card) return;
     const mapImage = document.getElementById('mapImage');
     if(mapImage){
+      let mapFallbackTried = false;
       mapImage.addEventListener('error', ()=>{
-        console.warn('map image failed to load');
+        console.warn('map image failed to load', mapImage.src);
+        // First attempt: try a JPG fallback (only once) if available
+        if(!mapFallbackTried){
+          mapFallbackTried = true;
+          const fallback = 'assets/map_example.jpg';
+          console.info('attempting map fallback to', fallback);
+          mapImage.src = fallback;
+          mapImage.alt = '지도 이미지 대체 시도 중';
+          return;
+        }
+
+        // If fallback already tried (or no fallback), show neutral overlay
         mapImage.alt = '지도 이미지 로드 실패';
-        // hide the broken image and show a neutral placeholder overlay
         try{
           mapImage.style.display = 'none';
           let existing = document.getElementById('mapErrorOverlay');
