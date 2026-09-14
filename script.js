@@ -224,6 +224,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     const popup = document.getElementById('mapPopup');
     const card = document.getElementById('mapCard');
     if(!card) return;
+    const mapImage = document.getElementById('mapImage');
+    if(mapImage){
+      mapImage.addEventListener('error', ()=>{
+        console.warn('map image failed to load, using fallback');
+        mapImage.src = 'assets/rec4.svg';
+        mapImage.alt = '지도 이미지(대체)';
+      });
+    }
     markers.forEach(m=>{
       m.addEventListener('click',(e)=>{
         // position popup near marker using marker's left/top
