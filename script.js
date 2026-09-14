@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   }
 
+  // hide bottom nav by default; will be shown when profile exists
+  document.querySelectorAll('.bottom-nav').forEach(n=>{ n.style.display='none'; });
+
   function openAuthModal(onSuccess){
     const modalBack = document.createElement('div');
     modalBack.className='modal-backdrop';
@@ -79,7 +82,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     // if user already has profile, show home recommendations instead of login
     const existing = localStorage.getItem('masil_profile');
-    if(existing){ if(loginCard) loginCard.style.display='none'; if(homeRec) { homeRec.style.display='grid'; renderRecommendations('homeRec'); document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); } }
+    if(existing){ if(loginCard) loginCard.style.display='none'; if(homeRec) { homeRec.style.display='block'; renderRecommendations('homeRecList'); document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex'); } }
 
     doLogin.addEventListener('click',()=>{
       localStorage.setItem('masil_logged_in','1');
