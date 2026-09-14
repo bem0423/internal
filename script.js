@@ -306,7 +306,25 @@ document.addEventListener('DOMContentLoaded',()=>{
     const addAbility = document.getElementById('addAbility');
     const abilityLists = document.getElementById('abilityLists');
     const profile = JSON.parse(localStorage.getItem('masil_profile')||'{}');
-    profile.abilities = profile.abilities || {'교육·학습':[], '자격증':[], '전문분야':[], '디지털 활용':[]};
+
+    // Normalize ability category keys to Korean in case an older profile used English keys
+    const keyMap = {
+      'Education':'교육·학습', '교육':'교육·학습', '교육·학습':'교육·학습',
+      'Certificates':'자격증', 'Certs':'자격증', '자격증':'자격증',
+      'Expertise':'전문분야', '전문분야':'전문분야',
+      'Digital':'디지털 활용', 'Digital Skills':'디지털 활용', '디지털 활용':'디지털 활용'
+    };
+    const normalized = {'교육·학습':[], '자격증':[], '전문분야':[], '디지털 활용':[]};
+    if(profile.abilities && typeof profile.abilities === 'object'){
+      Object.keys(profile.abilities).forEach(k=>{
+        const mapped = keyMap[k] || keyMap[k.trim()] || k;
+        const target = keyMap[k] ? keyMap[k] : (mapped === k ? null : mapped);
+        const destKey = target || (Object.keys(normalized).includes(k) ? k : null) || '교육·학습';
+        const items = Array.isArray(profile.abilities[k]) ? profile.abilities[k] : [];
+        normalized[destKey] = (normalized[destKey] || []).concat(items.filter(Boolean));
+      });
+    }
+    profile.abilities = normalized;
 
     function renderAbilities(){
       abilityLists.innerHTML='';
