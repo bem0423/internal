@@ -94,6 +94,21 @@ document.addEventListener('DOMContentLoaded',()=>{
     doPension.addEventListener('click',()=>{
       openAuthModal(()=>{ localStorage.setItem('masil_logged_in','1'); window.location.href = 'profile.html'; });
     });
+    const fillDemo = document.getElementById('fillDemo');
+    if(fillDemo){ fillDemo.addEventListener('click',()=>{
+      const demo = {
+        imageData: 'assets/rec1.svg',
+        intro: '데모 사용자 — 생산관리와 멘토 경험이 있습니다.',
+        work: [{industry:'제조업 현장관리',years:15},{industry:'소매·판매',years:4}],
+        abilities: {education:['직업훈련 A'],certs:['자격증 A'],expertise:['현장관리'],digital:['스마트폰활용']},
+        major: '제조업 현장관리', mid: '파트타임(주3일)', minor: '현장관리',
+        skills: ['생산관리','현장관리','멘토링']
+      };
+      localStorage.setItem('masil_profile',JSON.stringify(demo));
+      document.getElementById('loginCard').style.display='none';
+      const homeRec = document.getElementById('homeRec'); if(homeRec) homeRec.style.display='block';
+      renderRecommendations('homeRecList'); document.querySelectorAll('.bottom-nav').forEach(n=>n.style.display='flex');
+    }); }
     return;
   }
 
