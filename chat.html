@@ -13,14 +13,17 @@
     <p class="muted">친구와의 예시 채팅</p>
 
     <section class="card">
-      <div style="display:flex;gap:12px;align-items:flex-start">
-        <div style="width:80px;text-align:center">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:12px;align-items:center">
           <div style="width:48px;height:48px;border-radius:50%;background:#eef6ff;display:flex;align-items:center;justify-content:center">김</div>
-          <div class="muted" style="font-size:12px;margin-top:6px">김승현</div>
+          <div>
+            <div style="font-weight:700">친구 김승현</div>
+            <div class="muted" style="font-size:12px">마지막 로그인 2일 전</div>
+          </div>
         </div>
-        <div style="flex:1">
-          <div style="background:#f1f5f9;padding:10px;border-radius:10px;margin-bottom:8px">안녕하세요 — 이번에 지역 행사 도와주실 분 찾고 있어요.</div>
-          <div style="background:linear-gradient(90deg,#2b8aef,#6cc8ff);color:#fff;padding:10px;border-radius:10px;align-self:flex-end">아 네, 어떤 도움이 필요하세요?</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:#f1f5f9;padding:10px;border-radius:10px;max-width:70%">잘 지내냐?</div>
+          <div style="background:linear-gradient(90deg,#2b8aef,#6cc8ff);color:#fff;padding:10px;border-radius:10px;align-self:flex-end;max-width:70%">응, 잘 지내. 이번에 지역 행사 도와줄게.</div>
         </div>
       </div>
     </section>
